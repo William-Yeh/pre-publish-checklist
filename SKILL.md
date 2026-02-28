@@ -16,7 +16,7 @@ metadata:
 ## Arguments
 
 - `--skip <check>` — skip a specific check by name. Can be repeated.
-  Valid values: `skill-lint`, `code-review`, `tests`, `ci`
+  Valid values: `skill-lint`, `version-sync`, `code-review`, `tests`, `ci`
 
 ## Process
 
@@ -51,15 +51,26 @@ Run every applicable check. Skip any whose name matches a `--skip` argument.
    - Linter errors → BLOCKING
    - Linter warnings only → WARNING
 
+2. **Version sync** (`--skip version-sync` to skip)
+   - Run: `git tag --list` to check if the repo has any existing git tags.
+   - If no tags exist, skip this check (nothing to compare against).
+   - If tags exist, get the latest tag: `git describe --tags --abbrev=0`
+   - Parse the `version` field from the SKILL.md frontmatter.
+   - Strip any leading `v` prefix from the git tag before comparing (e.g. `v0.1.0` → `0.1.0`).
+   - Compare SKILL.md version against the latest git tag:
+     - If SKILL.md version == latest tag → BLOCKING: "Version not bumped — SKILL.md `<version>` matches existing tag `<tag>`. Increment the version before publishing."
+     - If SKILL.md version < latest tag → BLOCKING: "SKILL.md version `<version>` is older than existing tag `<tag>`."
+     - If SKILL.md version > latest tag → PASS
+
 #### Program source code checks (when any language build manifest detected)
 
-2. **Code review** (`--skip code-review` to skip)
+3. **Code review** (`--skip code-review` to skip)
    - Invoke the `William-Yeh/common-code-reviewer` skill: `/common-code-reviewer`
    - Reviewer verdict "REQUEST CHANGES" → BLOCKING
    - Reviewer verdict "APPROVE WITH COMMENTS" → WARNING
    - Reviewer verdict "APPROVE" → pass
 
-3. **Local tests** (`--skip tests` to skip)
+4. **Local tests** (`--skip tests` to skip)
    - Run the test command for each detected language:
 
      | Repo type | Test command |
@@ -76,7 +87,7 @@ Run every applicable check. Skip any whose name matches a `--skip` argument.
 
    - Any test failure → BLOCKING
 
-4. **CI status** (`--skip ci` to skip)
+5. **CI status** (`--skip ci` to skip)
    - Run: `gh run list --branch $(git branch --show-current) --limit 1`
    - Latest run status is not `completed` with `success` conclusion → BLOCKING
 

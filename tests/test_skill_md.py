@@ -73,6 +73,22 @@ def test_skill_lint_invocation(skill):
     assert "/skill-lint check" in skill
 
 
+def test_version_sync_skip_arg(skill):
+    assert "version-sync" in skill
+
+
+def test_version_sync_git_tag_command(skill):
+    assert "git describe --tags" in skill
+
+
+def test_version_sync_not_bumped_is_blocking(skill):
+    assert "Version not bumped" in skill
+
+
+def test_version_sync_older_version_is_blocking(skill):
+    assert "is older than existing tag" in skill
+
+
 def test_code_reviewer_invocation(skill):
     assert "/common-code-reviewer" in skill
 
