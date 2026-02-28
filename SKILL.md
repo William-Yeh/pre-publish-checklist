@@ -57,7 +57,10 @@ Run every applicable check. Skip any whose name matches a `--skip` argument.
    - If tags exist, get the latest tag: `git describe --tags --abbrev=0`
    - Parse the `version` field from the SKILL.md frontmatter.
    - Strip any leading `v` prefix from the git tag before comparing (e.g. `v0.1.0` → `0.1.0`).
-   - If they do not match → BLOCKING: "Git tag `<tag>` does not match SKILL.md version `<version>`"
+   - Compare SKILL.md version against the latest git tag:
+     - If SKILL.md version == latest tag → BLOCKING: "Version not bumped — SKILL.md `<version>` matches existing tag `<tag>`. Increment the version before publishing."
+     - If SKILL.md version < latest tag → BLOCKING: "SKILL.md version `<version>` is older than existing tag `<tag>`."
+     - If SKILL.md version > latest tag → PASS
 
 #### Program source code checks (when any language build manifest detected)
 
