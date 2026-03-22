@@ -3,12 +3,12 @@ name: pre-publish-checklist
 description: >
   Use when about to tag, release, or push a repo for publication. Detects repo
   type(s) from filesystem signals, runs all applicable checks (skill lint, code
-  review, tests, CI), classifies findings as blocking or non-blocking, then
-  hands off to publishing.
+  review, tests, CI), classifies findings as blocking or non-blocking, writes
+  rationale to ADR/changelog when all checks pass, then hands off to publishing.
 metadata:
   author: William Yeh <william.pjyeh@gmail.com>
   license: Apache-2.0
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Pre-Publish Checklist
@@ -16,7 +16,7 @@ metadata:
 ## Arguments
 
 - `--skip <check>` — skip a specific check by name. Can be repeated.
-  Valid values: `skill-lint`, `version-sync`, `code-review`, `tests`, `ci`
+  Valid values: `skill-lint`, `version-sync`, `code-review`, `tests`, `ci`, `docs`
 
 ## Process
 
@@ -122,7 +122,68 @@ When all checks pass or only warnings remain, the verdict is:
 Verdict: READY TO PUBLISH
 ```
 
-### Step 4 — Handoff
+### Step 4 — Document rationale (when READY TO PUBLISH) (`--skip docs` to skip)
+
+Skip this step entirely if there are blocking issues or if `--skip docs` was passed.
+
+Gather context from all available sources:
+- The current coding-agent session dialog (decisions made, alternatives discussed, trade-offs considered)
+- `git log` and diff since the last tag or branch point
+- Issue/PR references mentioned in commit messages or the session
+
+Then update or create the following documents as applicable.
+
+#### 4a — ADR (Architecture Decision Record)
+
+- First, check `README.md` for any project-specific documentation arrangement (e.g. the project may direct decision records to `DESIGN.md`, a wiki, or a custom path).
+- If no project-specific arrangement is documented, look for a `docs/adr/` or `adr/` directory; if neither exists, create `docs/adr/`.
+- Scan existing ADR files to determine the next sequential number (e.g. `0001`, `0002`).
+- Write a new ADR **only** if the change involves a design or architecture decision (new dependency, changed interface contract, security trade-off, algorithm choice). Skip for pure bug fixes or trivial patches.
+- Template:
+
+  ```markdown
+  # ADR-<NNNN>: <Short decision title>
+
+  Date: <YYYY-MM-DD>
+
+  ## Status
+
+  Accepted
+
+  ## Context
+
+  <Why this change was needed — problem statement, constraints, background.>
+
+  ## Decision
+
+  <What was decided and why this option was chosen over alternatives.>
+
+  ## Consequences
+
+  <Trade-offs, follow-up work, risks introduced or mitigated.>
+  ```
+
+#### 4b — Usage / changelog notes
+
+- Look for `CHANGELOG.md`, `USAGE.md`, or `README.md` at the repo root.
+- Append or update the relevant section to reflect: what changed, how users invoke or benefit from it, and any breaking changes or migration steps.
+- Keep it concise — one to three bullet points per item.
+
+#### 4c — Other noteworthy items
+
+- If the session dialog or code reveals performance characteristics, known limitations, or operational notes future maintainers should know, add a short note to the appropriate place (e.g. `NOTES.md`, inline comment block, or an existing developer guide).
+
+After completing documentation, output a summary:
+
+```
+## Documentation updates
+
+- [ADR] docs/adr/0003-use-uv-for-dependency-management.md — created
+- [CHANGELOG] Added entry under "Unreleased" for <feature>
+- (none) — no architecture decisions or notable items to record
+```
+
+### Step 5 — Handoff
 
 - **No blocking issues**: Offer to invoke `commit-commands:commit-push-pr` to complete the publish step.
 - **Blocking issues remain**: Display them clearly. Do not proceed.
