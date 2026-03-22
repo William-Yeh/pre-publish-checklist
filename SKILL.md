@@ -8,7 +8,7 @@ description: >
 metadata:
   author: William Yeh <william.pjyeh@gmail.com>
   license: Apache-2.0
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # Pre-Publish Checklist
@@ -162,6 +162,23 @@ Then update or create the following documents as applicable.
 
   <Trade-offs, follow-up work, risks introduced or mitigated.>
   ```
+
+#### 4a-ii — ADR consolidation review
+
+After writing any new ADR (or even if none was written), read all existing ADRs and assess whether consolidation is warranted:
+
+- **Superseded decisions**: if a new ADR reverses or significantly changes an older one, update the older ADR's `## Status` to `Superseded by ADR-<NNNN>` and add a note explaining what changed.
+- **Overlapping decisions**: if two or more ADRs cover the same concern from different angles and have drifted out of sync, merge their content into the most recent one, mark the older ones as `Merged into ADR-<NNNN>`, and update cross-references.
+- **Stale assumptions**: if context or consequences described in an old ADR are now known to be incorrect (e.g. a dependency was replaced, a constraint was lifted), annotate that ADR with an `## Amendment` section rather than editing history in place.
+
+Skip this sub-step if there are fewer than two existing ADRs (nothing to consolidate).
+
+Include consolidation actions in the documentation summary:
+
+```
+- [ADR] docs/adr/0001-choose-httpx.md — status updated to "Superseded by ADR-0004"
+- [ADR] docs/adr/0002-retry-strategy.md — Amendment section added
+```
 
 #### 4b — Usage / changelog notes
 
