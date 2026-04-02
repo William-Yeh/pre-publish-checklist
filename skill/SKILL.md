@@ -1,10 +1,6 @@
 ---
 name: pre-publish-checklist
-description: >
-  Use when about to tag, release, or push a repo for publication. Detects repo
-  type(s) from filesystem signals, runs all applicable checks (skill lint, code
-  review, tests, CI), classifies findings as blocking or non-blocking, writes
-  rationale to ADR/changelog when all checks pass, then hands off to publishing.
+description: Use when about to tag, release, or push a repo for publication.
 metadata:
   author: William Yeh <william.pjyeh@gmail.com>
   license: Apache-2.0

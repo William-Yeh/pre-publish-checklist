@@ -4,7 +4,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def test_skill_md_exists():
-    assert (REPO_ROOT / "SKILL.md").exists()
+    assert (REPO_ROOT / "skill" / "SKILL.md").exists()
 
 
 def test_license_exists():

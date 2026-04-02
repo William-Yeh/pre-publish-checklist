@@ -48,8 +48,24 @@ Copy the skill directory to your agent's skill folder:
 
 Compatible with any AI agent that supports the [Agent Skills spec](https://agentskills.io).
 
+### CLI
+
+```
+/pre-publish-checklist
+/pre-publish-checklist --skip ci
+/pre-publish-checklist --skip code-review --skip tests
+```
+
 ### Starter prompts
 
 - `/pre-publish`
 - `/pre-publish --skip ci`
 - `/pre-publish --skip code-review --skip tests`
+
+## Changelog
+
+### v0.4.0 (unreleased)
+
+- Moved `SKILL.md` into `skill/` subdirectory so `npx skills add` installs only agent-facing files
+- Trimmed skill `description` to a single routing clause (CSO Rule 18 compliance)
+- Added CLI usage subsection to README

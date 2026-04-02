@@ -6,7 +6,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 @pytest.fixture
 def skill():
-    return (REPO_ROOT / "SKILL.md").read_text()
+    return (REPO_ROOT / "skill" / "SKILL.md").read_text()
 
 
 @pytest.fixture
